@@ -44,7 +44,9 @@ function send(settings, request)
 			return callback(_elm_lang$core$Native_Scheduler.succeed(toResponse(req)));
 		});
 
-		req.open(request.verb, request.url, true);
+		//Certain strings cause runtime errors--prepending "/" forces local access and prevents the error
+		var forceLocal = /^[a-zA-Z][a-zA-Z0-9\.]*:[0-9]+/.test(request.url)
+		req.open(request.verb, (forceLocal ? "/" : "") + request.url, true);
 
 		// set all the headers
 		function setHeader(pair) {
